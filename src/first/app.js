@@ -1,8 +1,23 @@
+const ls_key = 'bookmarks';
+
+function saveBookmarks() {
+  localStorage.setItem(ls_key, JSON.stringify(BookArr));
+}
+
+function loadBookmarks() {
+  const saved = localStorage.getItem(ls_key);
+  BookArr = saved ? JSON.parse(saved) : [];
+}
+
+
 const inputEl = document.querySelector('#bookmarkInput');
 const btnAddEl = document.querySelector('button');
 const itemsEl = document.querySelector('ul');
 
 let BookArr = [];
+
+loadBookmarks();
+renderList();
 
 inputEl.value = '';
 
@@ -11,7 +26,6 @@ itemsEl.addEventListener('click', onItemsClick);
 inputEl.placeholder = `URL`;
 
 function renderList() {
-    localStorage.setItem(itemsEl);
     itemsEl.innerHTML = BookArr.map((item, index) => {
         return `
             <li class="item" data-idx="${index}">
@@ -22,6 +36,8 @@ function renderList() {
             </li>
         `;
     }).join("");
+
+  saveBookmarks();
 }
 
 function addBookmark(event) {
@@ -90,6 +106,7 @@ function onItemsClick(event) {
             event.target.textContent = 'Edit';
             event.target.classList.remove('save');
             event.target.classList.add('edit');
+            renderList();
         } else if (!newValue) {
             input.placeholder = `Введіть посилання!`;
         } else if (!newValue.includes("https://")) {
